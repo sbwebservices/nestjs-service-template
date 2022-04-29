@@ -3,7 +3,6 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DownloadModule } from './download/download.module';
-import { SpreadsheetsModule } from './spreadsheets/spreadsheets.module';
 import { SpreadsheetInfo } from './schemas/spreadsheet-info.class';
 import { SpreadsheetInfoSchema } from './schemas/spreadsheet-info.schema';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -21,7 +20,6 @@ import { RabbitProviderModule } from './providers/rabbitmq/rabbitmq-provider.mod
       { name: SpreadsheetInfo.name, schema: SpreadsheetInfoSchema },
     ]),
     DownloadModule,
-    SpreadsheetsModule,
     MessagingModule,
   ],
   controllers: [AppController],

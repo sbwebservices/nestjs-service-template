@@ -33,12 +33,7 @@ export class AppController {
     try {
       const spreadshetStreaming = await this.downloadS3Service.downloadFile(
         dto.objectId,
-      );
-      const products = await this.spreadsheetsService.read(spreadshetStreaming);
-
-      // products.forEach(product => {
-      //   this.messagingService.sendToProcessingQueue(product);
-      // });
+      );      
 
       this.messagingService.sendToProcessingQueue({ test: 'moo' });
 

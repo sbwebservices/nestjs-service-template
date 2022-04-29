@@ -36,17 +36,10 @@ const config = (): AppConfig => {
 };
 
 export const RabbitMQConstants = {
-  exchange: 'digitalization.bulk.product',
+  exchange: '<SQUAD>.<PROJECTNAME>.<EXCHANGE_NAME>',
   exchange_type: 'topic',
-  processing_queue: 'digitalization.bulk.product.processing',
-  processing_queue_routing_key: 'product.processing',
-  auctionlotting_integration_input_queue:
-    'digitalization.bulk.product.auction-lotting-input',
-  auctionlotting_integration_input_routing_key: 'product.auction-lotting.input',
-  auctionlotting_integration_output_queue:
-    'digitalization.bulk.product.auction-lotting-output',
-  auctionlotting_integration_output_routing_key:
-    'product.auction-lotting.output',
+  processing_queue: '<SQUAD>.<PROJECTNAME>.<EXCHANGE_NAME>.<QUEUE_NAME>',
+  processing_queue_routing_key: 'product.<ROUTING_KEY>',
 };
 
 export default config;
