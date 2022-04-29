@@ -1,0 +1,81 @@
+version: '2.4'
+
+services:
+  localstack:
+    image: localstack/localstack
+    hostname: localstack
+    environment:
+      SERVICES: s3
+      DEFAULT_REGION: sa-east-1
+      DOCKER_HOST: unix:///var/run/docker.sock
+      HOST_TMP_FOLDER: /tmp/localstack
+      HOSTNAME_EXTERNAL: localstack
+    ports:
+      - 4566:4566
+    volumes:
+      - /tmp/localstack:/tmp/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./docker/localstack:/docker-entrypoint-initaws.d
+    healthcheck:
+      test: exit 0
+      start_period: 3s
+    networks:
+      - bulk_product_api
+
+  mongo:
+    image: mongo:4.0.5
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: spreadsheets
+    ports:
+      - 27017:27017
+    volumes:
+      - ./docker/mongodb/init:/docker-entrypoint-initdb.d
+    networks:
+      - bulk_product_api
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/
+      - rabbitmq_log:/var/log/rabbitmq/
+    networks:
+      - bulk_product_api
+
+  api:    
+    environment:         
+      NODE_ENV: local
+      AWS_ACCESS_KEY_ID: dummy
+      AWS_SECRET_ACCESS_KEY: dummy
+      AWS_REGION: sa-east-1
+      AWS_DEFAULT_REGION: sa-east-1
+    expose:
+    - 8090
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./:/app
+      - ./node_modules:/app/node_modules
+    ports:
+      - '8090:8090'
+    # depends_on:      
+    #   localstack:
+    #     condition: service_healthy
+    links:
+      - localstack      
+    networks:
+      - bulk_product_api
+
+volumes:
+  rabbitmq_data:
+  rabbitmq_log:
+
+networks:
+  bulk_product_api:
+    driver: bridge
